@@ -1,0 +1,19 @@
+name: Checks
+on: [push, pull_request]
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Code check
+    if: "!contains(github.event.head_commit.message, 'ci skip all')"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+    - name: Install ruff
+      run: python3 -m pip install ruff
+    - name: Run lint check
+      run: ruff check --output-format github .
+    - name: Run format check
+      run: ruff check --output-format github .

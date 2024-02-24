@@ -1,0 +1,83 @@
+[project]
+name = "git-pr-helper"
+maintainers = [
+    {name = "Grub4K", email = "contact@grub4k.xyz"},
+]
+description = "Git subcommand to aid with GitHub PRs interaction"
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = [
+    "git",
+    "git-plugin",
+]
+license = {file = "LICENSE"}
+classifiers = [
+    "Topic :: Multimedia :: Video",
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dynamic = ["version"]
+dependencies = [
+    "rich",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit",
+    "ruff~=0.2.0",
+    "pyinstaller~=6.0",
+]
+
+[project.urls]
+Documentation = "https://github.com/Grub4K/git-pr-helper?tab=readme-ov-file"
+Repository = "https://github.com/Grub4K/git-pr-helper"
+Tracker = "https://github.com/Grub4K/git-pr-helper/issues"
+Funding = "https://github.com/sponsors/Grub4K"
+
+[project.scripts]
+git-pr-helper = "git_pr_helper.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "git_pr_helper/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["git_pr_helper"]
+
+[tool.hatch.envs.default]
+features = ["dev"]
+
+[tool.hatch.envs.default.scripts]
+install = "pre-commit install"
+fix = [
+    "lint",
+    "format",
+]
+lint = "ruff check --fix {args:.}"
+format = "ruff format {args:.}"
+check = [
+    "ruff check {args:.}",
+    "ruff format --check {args:.}",
+]
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+extend-select = [
+    "I",
+]
+
+[tool.ruff.lint.isort]
+force-single-line = true
+required-imports = ["from __future__ import annotations"]
