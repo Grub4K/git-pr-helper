@@ -1,12 +1,16 @@
 from __future__ import annotations
 
+import contextlib
 import inspect
 import subprocess
 import sys
 
+import rich.text
 from rich.console import Console
 
+import git_pr_helper
 import git_pr_helper.actions
+import git_pr_helper.styles
 
 
 def _main():
@@ -44,14 +48,24 @@ def _main():
         help="the subcommand to get help for",
     )
     parsers["help"] = parser
+    parsers["version"] = subparsers.add_parser("version", help="show version and exit")
 
     args = root_parser.parse_args()
     if args.action is None:
         root_parser.error("need to provide an action")
-    elif args.action == "help":
-        parser = parsers[args.subcommand] if args.subcommand else root_parser
-        print(parser.format_help())
-        exit(0)
+
+    elif args.action in ("help", "version"):
+        if args.action == "help":
+            parser = parsers[args.subcommand] if args.subcommand else root_parser
+            result = rich.text.Text(parser.format_help())
+        else:
+            result = rich.text.Text(
+                git_pr_helper.__version__, git_pr_helper.styles.ACCENT
+            )
+
+        console = Console()
+        console.print(result)
+        sys.exit(0)
 
     runner = ALL_ACTIONS[args.action].run
 
@@ -68,10 +82,8 @@ def _main():
 
 
 def main():
-    try:
+    with contextlib.suppress(KeyboardInterrupt):
         _main()
-    except KeyboardInterrupt:
-        pass
 
 
 if __name__ == "__main__":

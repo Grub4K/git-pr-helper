@@ -48,12 +48,12 @@ def read_pr_branch_infos(pattern: str | None = None):
 
     descriptions = git("config", "--null", "--get-regexp", filter_pattern)
     for description in descriptions:
-        name, _, description = description.partition("\n")
-        if not description.startswith(PR_BRANCH_PREFIX):
+        name, _, part = description.partition("\n")
+        if not part.startswith(PR_BRANCH_PREFIX):
             continue
         name = remove_around(name, "branch.", ".description")
-        _, remote, branch, *description = description.split("\n")
-        yield name, PrBranchInfo(remote, branch, description)
+        _, remote, branch, *part = part.split("\n")
+        yield name, PrBranchInfo(remote, branch, part)
 
 
 def write_pr_branch_info(name: str, info: PrBranchInfo):

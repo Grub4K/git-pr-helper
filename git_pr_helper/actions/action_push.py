@@ -16,7 +16,7 @@ if typing.TYPE_CHECKING:
 
 
 # Workaround for `argparse.REMAINDER`
-PARSER_ARGS = dict(prefix_chars="`")
+PARSER_ARGS = {"prefix_chars": "`"}
 
 
 def configure_parser(parser: argparse.ArgumentParser):
@@ -49,9 +49,9 @@ def run(console: rich.console.Console, args: argparse.Namespace):
         )
         return 1
 
-    # TODO: lazy if already up to date
+    # TODO(Grub4K): lazy if already up to date
     git("push", *args.remaining, pr_branch_info.remote, f"HEAD:{pr_branch_info.branch}")
 
     ref_spec = f"refs/pull/{remote_ref}/head:pr/{remote_ref}"
-    git("fetch", "--update-head-ok", current_remote, ref_spec)
+    git("fetch", "--all", "--update-head-ok", current_remote, ref_spec)
     return 0

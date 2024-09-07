@@ -55,6 +55,7 @@ def run(console: rich.console.Console, args: argparse.Namespace):
             f"refs/remotes/{pr_remote}/pr/{pr_number}",
         )
     ]
+
     if not head_hashes:
         console.print(
             rich.text.Text.assemble(
@@ -63,7 +64,8 @@ def run(console: rich.console.Console, args: argparse.Namespace):
             )
         )
         return 1
-    elif len(head_hashes) > 1:
+
+    if len(head_hashes) > 1:
         console.print(
             rich.text.Text.assemble(
                 ("error", styles.ERROR),
@@ -75,6 +77,7 @@ def run(console: rich.console.Console, args: argparse.Namespace):
             )
         )
         return 1
+
     head_hash, pr_remote = head_hashes[0]
     pr_remote = pr_remote.partition("/")[0]
 

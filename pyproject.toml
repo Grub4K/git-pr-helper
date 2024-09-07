@@ -31,8 +31,8 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pre-commit",
-    "ruff~=0.2.0",
-    "pyinstaller~=6.0",
+    "ruff==0.6.*",
+    "pyinstaller==6.*",
 ]
 
 [project.urls]
@@ -55,29 +55,48 @@ path = "git_pr_helper/__init__.py"
 packages = ["git_pr_helper"]
 
 [tool.hatch.envs.default]
+path = ".venv"
+installer = "uv"
 features = ["dev"]
 
 [tool.hatch.envs.default.scripts]
-install = "pre-commit install"
-fix = [
-    "lint",
-    "format",
-]
-lint = "ruff check --fix {args:.}"
-format = "ruff format {args:.}"
-check = [
-    "ruff check {args:.}",
-    "ruff format --check {args:.}",
-]
+init = "pre-commit install -c pre-commit.yml"
+deinit = "pre-commit uninstall"
+
+[tool.hatch.envs.hatch-static-analysis]
+dependencies = ["ruff==0.6.*"]
+config-path = "pyproject.toml"
 
 [tool.ruff]
 line-length = 88
 
 [tool.ruff.lint]
-extend-select = [
-    "I",
+select = [
+  "C4",
+  "E",
+  "F",
+  "I",
+  "PLC",
+  "PLE",
+  "PLW",
+  "PYI",
+  "RET",
+  "RUF",
+  "SIM",
+  "TD",
+  "TID",
+  "W",
+]
+ignore = [
+  "TD003",
+  "E402",
+  "E501",
+  "PLR09",
 ]
 
 [tool.ruff.lint.isort]
-force-single-line = true
 required-imports = ["from __future__ import annotations"]
+force-single-line = true
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"

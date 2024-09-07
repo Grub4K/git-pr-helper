@@ -3,6 +3,6 @@ repos:
   hooks:
   - id: check
     name: code check
-    entry: hatch run check
+    entry: hatch fmt --check
     language: system
     types: [python]
