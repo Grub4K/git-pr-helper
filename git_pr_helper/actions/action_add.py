@@ -123,7 +123,9 @@ def run(console: rich.console.Console, args: argparse.Namespace):
             remote = f"git@github.com:{remote}.git"
 
     name = f"pr/{pr_number}"
-    git("switch", "-c", name, "--track", f"{pr_remote}/{name}")
+    git("switch", "-c", name, head_hash)
+    git("config", "--null", f"branch.{name}.remote", pr_remote)
+    git("config", "--null", f"branch.{name}.merge", f"refs/pull/{pr_number}/head")
     write_pr_branch_info(name, PrBranchInfo(remote, branch, []))
 
     if args.prune:

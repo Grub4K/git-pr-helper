@@ -64,15 +64,15 @@ def run(console: rich.console.Console, args: argparse.Namespace):
     )
     for item in items:
         head, commit_full, commit, local, remote = item.split(" ")
+        pr_branch_info = pr_branch_infos.get(local)
+        if not pr_branch_info:
+            continue
         ahead, _, behind = git(
             "rev-list",
             "--left-right",
             "--count",
             f"{commit_full}...{remote}",
         )[0].partition("\t")
-        pr_branch_info = pr_branch_infos.get(local)
-        if not pr_branch_info:
-            continue
         branches[local] = BranchInfo(
             head == "1",
             commit,
@@ -100,8 +100,8 @@ def run(console: rich.console.Console, args: argparse.Namespace):
     table.add_column("branch", style=styles.ACCENT)
     table.add_column("note", style="bright_white")
 
-    # TODO(Grub4K): take this from the config actually
-    default_remote = "upstream"
+    # TODO(Grub4K): allow specifying this manually
+    default_remote = "origin"
 
     for branch in branches.values():
         local = rich.text.Text(branch.local)
